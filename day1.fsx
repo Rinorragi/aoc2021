@@ -33,5 +33,3 @@ let increasesPart2 =
 
 let answer2 = increasesPart2 |> Seq.length
 printfn "Answer 2: %d" answer2
-
-
