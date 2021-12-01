@@ -27,7 +27,7 @@ printfn "Answer 1: %d" answer1
 let increasesPart2 = 
     depthList
     |> List.mapi (fun i x -> if i > 2 then Some(compareSum (depthList, i)) else None)
-    |> List.filter (fun v -> Option.isSome v)
+    |> List.filter Option.isSome
     |> List.map Option.get
     |> List.filter (fun x -> x = true)
 
