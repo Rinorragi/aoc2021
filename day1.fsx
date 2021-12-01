@@ -1,18 +1,11 @@
 open System
-open System.IO
-
-let readlLines(filePath:string) = seq {
-    use sr = new StreamReader (filePath)
-    while not sr.EndOfStream do
-        yield sr.ReadLine ()
-}
 
 let compareSum (refList : int list, indx : int) =
     refList.Item(indx-2) + refList.Item(indx-1) + refList.Item(indx) > refList.Item(indx-3) + refList.Item(indx-2) + refList.Item(indx-1)
 
 printfn "Advent of Code Day 1"
 let depthList : int list = 
-    readlLines "./input/input_day1.txt"
+    System.IO.File.ReadLines "./input/input_day1.txt"
     |> Seq.map System.Int32.Parse
     |> List.ofSeq
 
