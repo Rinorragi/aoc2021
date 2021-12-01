@@ -10,8 +10,7 @@ let readlLines(filePath:string) = seq {
 let compareSum (refList : int list, indx : int) =
     refList.Item(indx-2) + refList.Item(indx-1) + refList.Item(indx) > refList.Item(indx-3) + refList.Item(indx-2) + refList.Item(indx-1)
 
-
-printfn "Advent of Code Day 1 - Part 1"
+printfn "Advent of Code Day 1"
 let depthList : int list = 
     readlLines "./input/input_day1.txt"
     |> Seq.map System.Int32.Parse
@@ -31,7 +30,7 @@ let increasesPart2 =
     |> List.filter (fun v -> Option.isSome v)
     |> List.map Option.get
     |> List.filter (fun x -> x = true)
-    
+
 let answer2 = increasesPart2 |> Seq.length
 printfn "Answer 2: %d" answer2
 
