@@ -22,10 +22,10 @@ let rec submarineNavigation (cmdList : string list) (aim : int) (horizontal : in
         | "forward" -> 
             submarineNavigation cmdList.Tail aim (horizontal + cmdValue) (depth + (aim * cmdValue))
         | "up" ->
-            submarineNavigation cmdList.Tail (aim - cmdValue ) horizontal depth
+            submarineNavigation cmdList.Tail (aim - cmdValue) horizontal depth
         | "down" ->
             submarineNavigation cmdList.Tail (aim + cmdValue) horizontal depth
-        | _ -> raise (RecursionProblem("should not be possible"))
+        | _ -> raise (RecursionProblem(sprintf "Should not be possible, command was: '%s' with value: '%d'" cmd cmdValue))
         
 printfn "Advent of Code Day 1"
 let commandList = 
