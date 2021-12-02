@@ -27,9 +27,6 @@ let rec submarineNavigation (cmdList : string list) (aim : int) (horizontal : in
             submarineNavigation cmdList.Tail (aim + cmdValue) horizontal depth
         | _ -> raise (RecursionProblem("should not be possible"))
         
-
-
-
 printfn "Advent of Code Day 1"
 let commandList = 
     System.IO.File.ReadLines "./input/input_day2.txt"
