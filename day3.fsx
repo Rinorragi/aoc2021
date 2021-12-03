@@ -76,21 +76,18 @@ let commandList =
 let gammaRateBitList =
     commandList
     |> (calculateMostCommonBitList)
+let gammaRate = bitArrayToInt gammaRateBitList
 
 // epsilon rate = least common bit "in the corresponding position"
 let epsilonRateBiList = 
     gammaRateBitList
     |> reverseBitList
-
-let gammaRate = bitArrayToInt gammaRateBitList
 let epsilonRate = bitArrayToInt epsilonRateBiList
 
 // power consumption = gamma rate * epsilon rate
 let powerConsumption = gammaRate * epsilonRate
-
 printfn "Answer 1: %d"  powerConsumption
 
-let valueLength = commandList.Head.Length
 // Oxygen rating filter by most common value until only 1 left
 let oxygenRatingList = filterTheOneRow commandList calculateMostCommonBitList
 // CO2 Scrubber value filter by least common value until 1 left
@@ -99,8 +96,6 @@ let co2ScrubberList = filterTheOneRow commandList co2FilterFunction
 // Life support rating = oxygen rating * co2 scrubber
 let oxygenRating = bitArrayToInt oxygenRatingList.Head
 let co2ScrubberValue = bitArrayToInt co2ScrubberList.Head
-
 let lifeSupportRating = oxygenRating * co2ScrubberValue
-
 printfn "Answer 2: %d" lifeSupportRating 
 
