@@ -2,7 +2,7 @@ open System
 
 exception ValueProblem of string
 
-let commonBitCalculation (reading: string) =
+let stringToIntList (reading: string) =
     reading
     |> Seq.toList
     |> List.map (fun x -> 
@@ -61,7 +61,7 @@ let commandList =
 // gamma rate = most common bit "in the corresponding position"
 let gammaRateBitList =
     commandList
-    |> List.map commonBitCalculation
+    |> List.map stringToIntList
     |> (calculateMostCommonBitList)
 
 // epsilon rate = least common bit "in the corresponding position"
