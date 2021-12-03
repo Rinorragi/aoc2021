@@ -53,6 +53,19 @@ let reverseBitList (bitList: int list) =
     | 1 -> 0
     | _  -> raise(ValueProblem(sprintf "Value %d is not possible" x)))
 
+let filterTheOneRow (aBitList: (int list) list) constructFilter = 
+    let listLength = aBitList.Head.Length
+    [0 .. 1 .. listLength - 1]
+    |> List.fold (fun (acc: (int list) list) (elem: int) -> 
+        if acc.Length = 1
+        then 
+            acc
+        else 
+            let (referenceList: int list) = constructFilter acc
+            acc 
+            |> List.filter (fun f -> f[elem] = referenceList[elem])
+    ) aBitList
+
 printfn "Advent of Code Day 3"
 let commandList = 
     System.IO.File.ReadLines "./input/input_day3.txt"
@@ -79,32 +92,10 @@ printfn "Answer 1: %d"  powerConsumption
 
 let valueLength = commandList.Head.Length
 // Oxygen rating filter by most common value until only 1 left
-let oxygenRatingList =
-    [0 .. 1 .. valueLength - 1]
-    |> List.fold (fun (acc: (int list) list) (elem: int) -> 
-        if acc.Length = 1
-        then 
-            acc
-        else 
-            let mostCommonBitList = calculateMostCommonBitList acc
-            acc 
-            |> List.filter (fun f -> f[elem] = mostCommonBitList[elem])
-    ) commandList
+let oxygenRatingList = filterTheOneRow commandList calculateMostCommonBitList
 // CO2 Scrubber value filter by least common value until 1 left
-let co2ScrubberList =
-    [0 .. 1 .. valueLength - 1]
-    |> List.fold (fun (acc: (int list) list) (elem: int) -> 
-        if acc.Length = 1
-        then 
-            acc
-        else 
-            let leastCommonBitList = 
-                acc 
-                |> calculateMostCommonBitList
-                |> reverseBitList
-            acc 
-            |> List.filter (fun f -> f[elem] = leastCommonBitList[elem])
-    ) commandList
+let co2FilterFunction = fun x -> calculateMostCommonBitList x |> reverseBitList
+let co2ScrubberList = filterTheOneRow commandList co2FilterFunction
 // Life support rating = oxygen rating * co2 scrubber
 let oxygenRating = bitArrayToInt oxygenRatingList.Head
 let co2ScrubberValue = bitArrayToInt co2ScrubberList.Head
