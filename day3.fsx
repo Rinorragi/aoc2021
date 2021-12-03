@@ -57,11 +57,11 @@ printfn "Advent of Code Day 3"
 let commandList = 
     System.IO.File.ReadLines "./input/input_day3.txt"
     |> Seq.toList
+    |> List.map stringToIntList
 
 // gamma rate = most common bit "in the corresponding position"
 let gammaRateBitList =
     commandList
-    |> List.map stringToIntList
     |> (calculateMostCommonBitList)
 
 // epsilon rate = least common bit "in the corresponding position"
@@ -77,17 +77,6 @@ let powerConsumption = gammaRate * epsilonRate
 
 printfn "Answer 1: %d"  powerConsumption
 
-let commandListIntList = 
-    commandList 
-    |> List.map (fun f -> 
-        f.ToCharArray() 
-        |> Array.map (fun x -> 
-            match x with 
-            | '0' -> 0
-            | '1' -> 1
-            | _ -> raise(ValueProblem(sprintf "Value %c is not possible" x)))
-        |> List.ofArray)
-
 let valueLength = commandList.Head.Length
 // Oxygen rating filter by most common value until only 1 left
 let oxygenRatingList =
@@ -100,7 +89,7 @@ let oxygenRatingList =
             let mostCommonBitList = calculateMostCommonBitList acc
             acc 
             |> List.filter (fun f -> f[elem] = mostCommonBitList[elem])
-    ) commandListIntList
+    ) commandList
 // CO2 Scrubber value filter by least common value until 1 left
 let co2ScrubberList =
     [0 .. 1 .. valueLength - 1]
@@ -115,7 +104,7 @@ let co2ScrubberList =
                 |> reverseBitList
             acc 
             |> List.filter (fun f -> f[elem] = leastCommonBitList[elem])
-    ) commandListIntList
+    ) commandList
 // Life support rating = oxygen rating * co2 scrubber
 let oxygenRating = bitArrayToInt oxygenRatingList.Head
 let co2ScrubberValue = bitArrayToInt co2ScrubberList.Head
