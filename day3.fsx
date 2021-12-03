@@ -13,11 +13,8 @@ let stringToIntList (reading: string) =
     )
 
 let tupleToBit (state: (int * int)) =
-    if fst state > snd state 
-        then 
-            0
-        else
-            1
+    fst state > snd state 
+    |> System.Convert.ToInt32
 
 let bitArrayToInt (aBitList: int list) =
     aBitList
