@@ -103,6 +103,38 @@ let answer = winnerBoardSum * snd winner
 
 printfn "Answer 1: %d"  answer
 
-printfn "Answer 2: %A" winner 
+let loser = 
+    bingoNumbers
+    |> List.fold(fun bingoBoardsAndNumberAndStatus number ->
+        let listOfBingoBoards, _, status = bingoBoardsAndNumberAndStatus
+        // When the only one is left
+        if status
+        then 
+            bingoBoardsAndNumberAndStatus
+        else 
+            // Update boards
+            let updatedBoards = updateBoardsWithNumber listOfBingoBoards number
+            // Check for winner status
+            let nonWinners = 
+                updatedBoards
+                |> List.map(fun bingoBoard -> 
+                    (bingoBoard, checkBingoBoardForWin bingoBoard))
+                |> List.filter (fun filterResult -> not (snd filterResult))
+                |> List.map fst
+            if(nonWinners.Length = 0)
+            then 
+                (updatedBoards, number, true)
+            else 
+                (nonWinners, number, false)
+    ) (bingoBoards, 0, false)
+
+let loserBoard, lastNumber, _ = loser
+let loserBoardSum = 
+    loserBoard
+    |> List.head 
+    |> getUnusedNumbers
+    |> List.sum
+let answer2 = loserBoardSum * lastNumber
+printfn "Answer 2: %d" answer2 
 
 
