@@ -89,14 +89,16 @@ let diagonalsAddedVentMap =
         let xInc = if vent.StartX < vent.EndX then 1 else -1
         let yInc = if vent.StartY < vent.EndY then 1 else -1
         let rounds = abs (vent.StartX - vent.EndX)
-        let mutable x = vent.StartX
-        let mutable y = vent.StartY
-        for i in 0 .. rounds do
-            let oldValue = (Array2D.get ventMap x y)
-            Array2D.set ventMap x y (oldValue + 1)
-            x <- x + xInc
-            y <- y + yInc
-        ventMap
+        let updatedMap = 
+            [0 .. rounds]
+            |> List.fold (fun acc _ -> 
+                let currentMap, x, y = acc
+                let oldValue = (Array2D.get ventMap x y)
+                Array2D.set currentMap x y (oldValue + 1)
+                (currentMap, x + xInc, y + yInc)
+            ) (ventMap, vent.StartX, vent.StartY)
+        match updatedMap with
+        | (newMap, _, _ ) -> newMap
     ) onlyHorizontalOrVerticalVentMap
 
 let answer2 = answerCalculation diagonalsAddedVentMap ventsMaxX ventsMaxY
