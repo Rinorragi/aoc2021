@@ -1,0 +1,43 @@
+open System
+
+printfn "Advent of Code Day 6"
+
+
+
+let lanternFishes = 
+    (System.IO.File.ReadAllText "./input/input_day6.txt").Split(",", StringSplitOptions.RemoveEmptyEntries)
+    |> Array.map int
+    |> List.ofArray
+
+let printLanternFishPopulation (day : int) (population: int64)  =
+    if(day = 18 || day = 80 || day = 256 || day % 10 = 0)
+    then printfn "%s: Day %d with %d lanternfishes" (DateTime.Now.ToString "HH:mm:ss") day population
+
+let invertLanternfishesToDayArray (fishesWithInitialDay : int list) = 
+    [|0 .. 8|]
+    |> Array.fold (fun (acc : int64[]) i -> 
+        let value = fishesWithInitialDay |> List.filter (fun f -> f = i) |> List.length
+        Array.set acc i value
+        acc
+    ) (Array.create 9 ((int64)0))
+    |> List.ofArray
+
+let initialLanternFishTimers = invertLanternfishesToDayArray lanternFishes
+
+let lanternFishPopulation = 
+    [1 .. 256]
+    |> List.fold (fun (dayFishArray : int64 list) dayNumber -> 
+        let breeders = dayFishArray[0]
+        let newPopulation = 
+            dayFishArray 
+            |> List.mapi (fun i _ -> 
+                if (i < 8 && i <> 6)
+                then dayFishArray[i + 1]
+                elif (i = 6) 
+                then dayFishArray[i + 1] + breeders
+                elif (i = 8)
+                then breeders
+                else raise(ArgumentOutOfRangeException(sprintf "Day timer %d not allowed" i))) 
+        printLanternFishPopulation dayNumber (newPopulation |> List.sum)
+        newPopulation
+    ) initialLanternFishTimers
