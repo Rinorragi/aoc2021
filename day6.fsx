@@ -12,7 +12,7 @@ let printLanternFishPopulation (day : int) (population: int64)  =
     if(day = 18 || day = 80 || day = 256 || day % 10 = 0)
     then printfn "%s: Day %d with %d lanternfishes" (DateTime.Now.ToString "HH:mm:ss") day population
 
-let invertLanternfishesToDayArray (fishesWithInitialDay : int list) = 
+let invertLanternfishesToDayTimerList (fishesWithInitialDay : int list) = 
     [|0 .. 8|]
     |> Array.fold (fun (acc : int64[]) i -> 
         let value = fishesWithInitialDay |> List.filter (fun f -> f = i) |> List.length
@@ -37,4 +37,4 @@ let lanternFishPopulation =
                 else raise(ArgumentOutOfRangeException(sprintf "Day timer %d not allowed" i))) 
         printLanternFishPopulation dayNumber (newPopulation |> List.sum)
         newPopulation
-    ) (invertLanternfishesToDayArray lanternFishes)
+    ) (invertLanternfishesToDayTimerList lanternFishes)
