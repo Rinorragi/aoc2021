@@ -2,8 +2,6 @@ open System
 
 printfn "Advent of Code Day 6"
 
-
-
 let lanternFishes = 
     (System.IO.File.ReadAllText "./input/input_day6.txt").Split(",", StringSplitOptions.RemoveEmptyEntries)
     |> Array.map int
@@ -22,8 +20,6 @@ let invertLanternfishesToDayArray (fishesWithInitialDay : int list) =
     ) (Array.create 9 ((int64)0))
     |> List.ofArray
 
-let initialLanternFishTimers = invertLanternfishesToDayArray lanternFishes
-
 let lanternFishPopulation = 
     [1 .. 256]
     |> List.fold (fun (dayFishArray : int64 list) dayNumber -> 
@@ -40,4 +36,4 @@ let lanternFishPopulation =
                 else raise(ArgumentOutOfRangeException(sprintf "Day timer %d not allowed" i))) 
         printLanternFishPopulation dayNumber (newPopulation |> List.sum)
         newPopulation
-    ) initialLanternFishTimers
+    ) (invertLanternfishesToDayArray lanternFishes)
