@@ -15,10 +15,10 @@ let printLanternFishPopulation (day : int) (population: int64)  =
 let invertLanternfishesToDayTimerList (fishesWithInitialDay : int list) = 
     [|0 .. 8|]
     |> Array.fold (fun (acc : int64[]) i -> 
-        let value = fishesWithInitialDay |> List.filter (fun f -> f = i) |> List.length
+        let value = fishesWithInitialDay |> List.filter ((=) i) |> List.length
         Array.set acc i value
         acc
-    ) (Array.create 9 ((int64)0))
+    ) (Array.create 9 0L)
     |> List.ofArray
 
 let lanternFishPopulation = 
@@ -28,13 +28,11 @@ let lanternFishPopulation =
         let newPopulation = 
             dayFishArray 
             |> List.mapi (fun i _ -> 
-                if (i < 8 && i <> 6)
-                then dayFishArray[i + 1]
-                elif (i = 6) 
-                then dayFishArray[i + 1] + breeders
-                elif (i = 8)
-                then breeders
-                else raise(ArgumentOutOfRangeException(sprintf "Day timer %d not allowed" i))) 
+                match i with
+                | i when i < 8 && i <> 6 -> dayFishArray[i + 1]
+                | 6 -> dayFishArray[i + 1] + breeders
+                | 8 -> breeders
+                | _ -> raise(ArgumentOutOfRangeException(sprintf "Day timer %d not allowed" i))) 
         printLanternFishPopulation dayNumber (newPopulation |> List.sum)
         newPopulation
     ) (invertLanternfishesToDayTimerList lanternFishes)
