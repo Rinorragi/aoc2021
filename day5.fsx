@@ -28,11 +28,9 @@ type VentLine = {
         let minY = [ventArray[0][1]; ventArray[1][1]] |> List.min
         let maxY = [ventArray[0][1]; ventArray[1][1]] |> List.max
         let coordinatesList : (int * int) list  = 
-            seq { 
-                for x in minX .. maxX do
-                    for y in minY .. maxY do
-                        (x,y) }
-            |> List.ofSeq
+            [ for x in minX .. maxX do
+                for y in minY .. maxY do
+                    (x,y) ]
         {
             StartX = ventArray[0][0]
             StartY = ventArray[0][1]
@@ -48,13 +46,11 @@ type VentLine = {
         }
 
 let answerCalculation (ventMap : int[,]) (maxX : int) (maxY : int) = 
-    seq {
-        for x in 0 .. maxX do
-            for y in 0 .. maxY do
-                if (Array2D.get ventMap x y) > 1 
-                then
-                    yield 1 }
-    |> List.ofSeq
+    [ for x in 0 .. maxX do
+        for y in 0 .. maxY do
+            if (Array2D.get ventMap x y) > 1 
+            then
+                yield 1 ]
     |> List.sum
 
 printfn "Advent of Code Day 5"
