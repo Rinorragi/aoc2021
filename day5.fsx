@@ -47,6 +47,16 @@ type VentLine = {
             Coordinates = coordinatesList
         }
 
+let answerCalculation (ventMap : int[,]) (maxX : int) (maxY : int) = 
+    seq {
+        for x in 0 .. maxX do
+            for y in 0 .. maxY do
+                if (Array2D.get ventMap x y) > 1 
+                then
+                    yield 1 }
+    |> List.ofSeq
+    |> List.sum
+
 printfn "Advent of Code Day 5"
 
 let ventLines = 
@@ -68,17 +78,27 @@ let onlyHorizontalOrVerticalVentMap =
         ventMap
     ) emptyVentMap
 
-let answer = 
-    seq {
-        for x in 0 .. ventsMaxX do
-            for y in 0 .. ventsMaxY do
-                let value = Array2D.get onlyHorizontalOrVerticalVentMap x y
-                if value > 1 
-                then 
-                    yield 1
-                else 
-                    yield 0 }
-    |> List.ofSeq
-    |> List.sum
+let answer = answerCalculation onlyHorizontalOrVerticalVentMap ventsMaxX ventsMaxY
 
 printfn "Answer part 1: %d" answer
+
+let diagonalsAddedVentMap =
+    ventLines
+    |> List.filter (fun f -> not(f.IsHorizontal) && not(f.IsVertical))
+    |> List.fold (fun ventMap vent ->
+        let xInc = if vent.StartX < vent.EndX then 1 else -1
+        let yInc = if vent.StartY < vent.EndY then 1 else -1
+        let rounds = abs (vent.StartX - vent.EndX)
+        let mutable x = vent.StartX
+        let mutable y = vent.StartY
+        for i in 0 .. rounds do
+            let oldValue = (Array2D.get ventMap x y)
+            Array2D.set ventMap x y (oldValue + 1)
+            x <- x + xInc
+            y <- y + yInc
+        ventMap
+    ) onlyHorizontalOrVerticalVentMap
+
+let answer2 = answerCalculation diagonalsAddedVentMap ventsMaxX ventsMaxY
+
+printfn "Answer part 2: %d" answer2
