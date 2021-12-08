@@ -9,8 +9,6 @@ type SignalEntry = {
     SolvedValues: IDictionary<int, string>
 }
 
-let single f xs = System.Linq.Enumerable.Single(xs, System.Func<_,_>(f))
-
 let intersectBy (patternToMatch: string) (pattern: string) (count: int) =
     (Set.intersect (set (patternToMatch.ToCharArray())) (set (pattern.ToCharArray()))).Count = count
 
@@ -18,28 +16,28 @@ let findMissingChar (patternToMatch: string) (removeThisPattern: string) =
     Set.difference (set (patternToMatch.ToCharArray())) (set (removeThisPattern.ToCharArray())) |> Set.toArray |> Array.head
 
 let solveSignalPatterns (signalPatterns : string array) =
-    let onePattern = signalPatterns |> single (fun f -> f.Length = 2)
-    let fourPattern = signalPatterns |> single (fun f -> f.Length = 4)
-    let sevenPattern = signalPatterns |> single (fun f -> f.Length = 3)
-    let eightPattern = signalPatterns |> single (fun f -> f.Length = 7)
+    let onePattern = signalPatterns |> Array.find (fun f -> f.Length = 2)
+    let fourPattern = signalPatterns |> Array.find (fun f -> f.Length = 4)
+    let sevenPattern = signalPatterns |> Array.find (fun f -> f.Length = 3)
+    let eightPattern = signalPatterns |> Array.find (fun f -> f.Length = 7)
     // 0, 6 and 9
     let sixtLengthPatterns = signalPatterns |> Array.filter (fun f -> f.Length = 6)
     // 2, 3 and 5
     let fiveLengthPatterns = signalPatterns |> Array.filter (fun f -> f.Length = 5)
     // Six is the one that is missing upper right char which we can find by comparing to 1
-    let sixPattern = sixtLengthPatterns |> single (fun f -> intersectBy onePattern f 1)
+    let sixPattern = sixtLengthPatterns |> Array.find (fun f -> intersectBy onePattern f 1)
     // Comparing eight and 6 we get the upper right char
     let upperRightChar = findMissingChar eightPattern sixPattern
     // Removing the known six pattern we can deduce the 0 pattern by comparing 9 to four
-    let ninePattern = sixtLengthPatterns |> Array.filter (fun f -> f <> sixPattern) |> single (fun f -> intersectBy f fourPattern 4)
+    let ninePattern = sixtLengthPatterns |> Array.filter (fun f -> f <> sixPattern) |> Array.find (fun f -> intersectBy f fourPattern 4)
     // Only zero remaining
-    let zeroPattern = sixtLengthPatterns |> single (fun f -> f <> sixPattern && f <> ninePattern)
+    let zeroPattern = sixtLengthPatterns |> Array.find (fun f -> f <> sixPattern && f <> ninePattern)
     // From five length list, 3 is only one to match entirely to 1
-    let threePattern = fiveLengthPatterns |> single (fun f -> intersectBy f onePattern 2)
+    let threePattern = fiveLengthPatterns |> Array.find (fun f -> intersectBy f onePattern 2)
     // Upper right char is missing from 5 but exists in 2
-    let twoPattern = fiveLengthPatterns |> Array.filter (fun f -> f <> threePattern) |> single (fun f -> intersectBy f (upperRightChar.ToString()) 1)
+    let twoPattern = fiveLengthPatterns |> Array.filter (fun f -> f <> threePattern) |> Array.find (fun f -> intersectBy f (upperRightChar.ToString()) 1)
     // Only 5 remaining
-    let fivePattern = fiveLengthPatterns |> single (fun f -> f <> threePattern && f <> twoPattern)
+    let fivePattern = fiveLengthPatterns |> Array.find (fun f -> f <> threePattern && f <> twoPattern)
 
     [   0, zeroPattern
         1, onePattern; 
