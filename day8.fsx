@@ -27,19 +27,19 @@ let solveSignalPatterns (signalPatterns : string array) =
     // 2, 3 and 5
     let fiveLengthPatterns = signalPatterns |> Array.filter (fun f -> f.Length = 5)
     // Six is the one that is missing upper right char which we can find by comparing to 1
-    let sixPattern = sixtLengthPatterns |> Array.filter (fun f -> intersectBy onePattern f 1) |> Array.head
+    let sixPattern = sixtLengthPatterns |> single (fun f -> intersectBy onePattern f 1)
     // Comparing eight and 6 we get the upper right char
     let upperRightChar = findMissingChar eightPattern sixPattern
     // Removing the known six pattern we can deduce the 0 pattern by comparing 9 to four
-    let ninePattern = sixtLengthPatterns |> Array.filter (fun f -> f <> sixPattern) |> Array.filter (fun f -> intersectBy f fourPattern 4) |> Array.head
+    let ninePattern = sixtLengthPatterns |> Array.filter (fun f -> f <> sixPattern) |> single (fun f -> intersectBy f fourPattern 4)
     // Only zero remaining
-    let zeroPattern = sixtLengthPatterns |> Array.filter (fun f -> f <> sixPattern && f <> ninePattern) |> Array.head
+    let zeroPattern = sixtLengthPatterns |> single (fun f -> f <> sixPattern && f <> ninePattern)
     // From five length list, 3 is only one to match entirely to 1
-    let threePattern = fiveLengthPatterns |> Array.filter (fun f -> intersectBy f onePattern 2) |> Array.head
+    let threePattern = fiveLengthPatterns |> single (fun f -> intersectBy f onePattern 2)
     // Upper right char is missing from 5 but exists in 2
-    let twoPattern = fiveLengthPatterns |> Array.filter (fun f -> f <> threePattern) |> Array.filter (fun f -> intersectBy f (upperRightChar.ToString()) 1) |> Array.head
+    let twoPattern = fiveLengthPatterns |> Array.filter (fun f -> f <> threePattern) |> single (fun f -> intersectBy f (upperRightChar.ToString()) 1)
     // Only 5 remaining
-    let fivePattern = fiveLengthPatterns |> Array.filter (fun f -> f <> threePattern && f <> twoPattern) |> Array.head
+    let fivePattern = fiveLengthPatterns |> single (fun f -> f <> threePattern && f <> twoPattern)
 
     [   0, zeroPattern
         1, onePattern; 
