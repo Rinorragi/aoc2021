@@ -71,7 +71,7 @@ let isIntValueSmallerThanOptionalValue (value: int) (optionalValue: Option<int>)
     | None -> false
 
 let joinMaps (p:Map<'a,'b>) (q:Map<'a,'b>) = 
-    Map(Seq.concat [ (Map.toSeq p) ; (Map.toSeq q) ])
+    (Seq.concat [(Map.toSeq p); (Map.toSeq q)]) |> Map.ofSeq
 
 let rec solveBasin (basinPoints : Map<string,Point>) (currentPoint : Point) =
     if basinPoints.ContainsKey(currentPoint.PointId)
