@@ -1,7 +1,7 @@
 open System
 
 type Point = {
-    PointId : string
+    Id : string
     Row : int
     Column : int
     Up : Option<int>
@@ -60,12 +60,12 @@ let points =
                 Height = unboxedValue
                 RiskLevel = unboxedValue + 1
                 IsLowPoint = amountOfMinValues = 1 && minValue = unboxedValue
-                PointId = sprintf "%d,%d" rowIndex columnIndex
+                Id = sprintf "%d,%d" rowIndex columnIndex
             }
         )
     )
 
-let isIntValueSmallerThanOptionalValue (value: int) (optionalValue: Option<int>)  =
+let isIntSmallerThanOptionalInt (value: int) (optionalValue: Option<int>)  =
     match optionalValue with
     | Some(x) ->  x < 9 && value < x
     | None -> false
@@ -73,21 +73,21 @@ let isIntValueSmallerThanOptionalValue (value: int) (optionalValue: Option<int>)
 let joinMaps (p:Map<'a,'b>) (q:Map<'a,'b>) = 
     (Seq.concat [(Map.toSeq p); (Map.toSeq q)]) |> Map.ofSeq
 
-let rec solveBasin (basinPoints : Map<string,Point>) (currentPoint : Point) =
-    if basinPoints.ContainsKey(currentPoint.PointId)
+let rec solveBasin (basinPoints : Map<string,Point>) (p : Point) =
+    if basinPoints.ContainsKey(p.Id)
     then 
         basinPoints
     else 
-        let updatedBasinPoints = basinPoints |> Map.add currentPoint.PointId currentPoint
-        let up = if isIntValueSmallerThanOptionalValue currentPoint.Height currentPoint.Up then Some(((currentPoint.Row - 1), currentPoint.Column)) else None
-        let down = if isIntValueSmallerThanOptionalValue currentPoint.Height currentPoint.Down then Some(((currentPoint.Row + 1), currentPoint.Column)) else None
-        let left = if isIntValueSmallerThanOptionalValue currentPoint.Height currentPoint.Left then Some(currentPoint.Row, (currentPoint.Column - 1)) else None
-        let right = if isIntValueSmallerThanOptionalValue currentPoint.Height currentPoint.Right then Some(currentPoint.Row, (currentPoint.Column + 1)) else None
+        let updatedBasinPoints = basinPoints |> Map.add p.Id p
+        let up = if isIntSmallerThanOptionalInt p.Height p.Up then Some(((p.Row - 1), p.Column)) else None
+        let down = if isIntSmallerThanOptionalInt p.Height p.Down then Some(((p.Row + 1), p.Column)) else None
+        let left = if isIntSmallerThanOptionalInt p.Height p.Left then Some(p.Row, (p.Column - 1)) else None
+        let right = if isIntSmallerThanOptionalInt p.Height p.Right then Some(p.Row, (p.Column + 1)) else None
         let whereToContinue = 
             [up;down;left;right]
             |> List.filter (Option.isSome)
             |> List.map (fun f -> points[fst f.Value][snd f.Value])
-            |> List.filter (fun p -> not(basinPoints.ContainsKey(p.PointId)))
+            |> List.filter (fun p -> not(basinPoints.ContainsKey(p.Id)))
     
         whereToContinue 
         |> List.fold (fun basinPointUpdater newPoint -> 
