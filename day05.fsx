@@ -1,3 +1,4 @@
+#time
 open System
 
 exception DataExpectationException of string
@@ -56,7 +57,7 @@ let answerCalculation (ventMap : int[,]) (maxX : int) (maxY : int) =
 printfn "Advent of Code Day 5"
 
 let ventLines = 
-    System.IO.File.ReadLines "./input/input_day5.txt"
+    System.IO.File.ReadLines "./input/input_day05.txt"
     |> Seq.toList
     |> List.map VentLine.InitVent
 

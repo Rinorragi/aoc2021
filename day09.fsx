@@ -1,3 +1,4 @@
+#time
 open System
 
 type Point = {
@@ -14,7 +15,7 @@ type Point = {
 } 
 
 let rawPoints = 
-    System.IO.File.ReadLines "./input/input_day9.txt"
+    System.IO.File.ReadLines "./input/input_day09.txt"
     |> Seq.map (fun f ->  
         f.ToCharArray() 
         |> Array.map (fun f -> 
@@ -109,6 +110,6 @@ let answer2 =
     |> Array.map (fun f -> f |> Map.toSeq |> Seq.length)
     |> Array.sortDescending
     |> Array.take 3
-    |> Array.fold (fun acc elem -> acc * elem) 1
+    |> Array.reduce (*)
 
 printfn "Answer 2: %d" answer2

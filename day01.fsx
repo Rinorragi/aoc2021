@@ -1,3 +1,4 @@
+#time
 open System
 
 let compareSum (refList : int list, indx : int) =
@@ -5,7 +6,7 @@ let compareSum (refList : int list, indx : int) =
 
 printfn "Advent of Code Day 1"
 let depthList : int list = 
-    System.IO.File.ReadLines "./input/input_day1.txt"
+    System.IO.File.ReadLines "./input/input_day01.txt"
     |> Seq.map System.Int32.Parse
     |> List.ofSeq
 

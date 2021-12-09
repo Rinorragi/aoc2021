@@ -1,3 +1,4 @@
+#time
 open System
 
 exception ValueProblem of string
@@ -65,7 +66,7 @@ let filterTheOneRow (aBitList: (int list) list) constructFilter =
 
 printfn "Advent of Code Day 3"
 let commandList = 
-    System.IO.File.ReadLines "./input/input_day3.txt"
+    System.IO.File.ReadLines "./input/input_day03.txt"
     |> Seq.toList
     |> List.map stringToIntList
 

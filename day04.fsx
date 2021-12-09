@@ -1,3 +1,4 @@
+#time
 open System
 
 let checkBingoBoardForWin (bingoBoard: (int * bool) list list) = 
@@ -43,7 +44,7 @@ let getUnusedNumbers (bingoBoard: (int * bool) list list) =
 
 printfn "Advent of Code Day 4"
 let bingoRawTextInput = 
-    System.IO.File.ReadAllText "./input/input_day4.txt"
+    System.IO.File.ReadAllText "./input/input_day04.txt"
 
 let nl = "\n"
 let bingoRawInput = 

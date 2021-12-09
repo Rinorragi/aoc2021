@@ -1,3 +1,4 @@
+#time
 open System
 
 exception RecursionProblem of string
@@ -29,7 +30,7 @@ let rec submarineNavigation (cmdList : string list) (aim : int) (horizontal : in
         
 printfn "Advent of Code Day 2"
 let commandList = 
-    System.IO.File.ReadLines "./input/input_day2.txt"
+    System.IO.File.ReadLines "./input/input_day02.txt"
     |> Seq.toList
 
 let horizonal = filterList commandList "forward"

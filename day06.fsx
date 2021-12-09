@@ -1,9 +1,10 @@
+#time
 open System
 
 printfn "Advent of Code Day 6"
 
 let lanternFishes = 
-    System.IO.File.ReadAllText "./input/input_day6.txt" 
+    System.IO.File.ReadAllText "./input/input_day06.txt" 
     |> fun (s:string) -> s.Split(",", StringSplitOptions.RemoveEmptyEntries)
     |> Array.map int
     |> List.ofArray

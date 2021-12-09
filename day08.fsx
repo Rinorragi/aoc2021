@@ -1,3 +1,4 @@
+#time
 open System
 open System.Collections.Generic
 
@@ -76,7 +77,7 @@ let patternValueToLong (entry : SignalEntry) =
     |> int64
 
 let signalEntries = 
-    System.IO.File.ReadLines "./input/input_day8.txt"
+    System.IO.File.ReadLines "./input/input_day08.txt"
     |> Seq.map (fun f -> 
         let row = f.Split('|',StringSplitOptions.RemoveEmptyEntries)
         let patterns = row[0].Split(" ", StringSplitOptions.RemoveEmptyEntries) 
