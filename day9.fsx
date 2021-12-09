@@ -26,7 +26,7 @@ let rawPoints =
 let maxRowIndex = rawPoints.Length - 1
 let maxColumnIndex = rawPoints[0].Length - 1
 
-let intToOptionalIntInGrid (grid : int array array) (rowIndex : int) (columnIndex : int) =
+let positionToOptionalInt (grid : int array array) (rowIndex : int) (columnIndex : int) =
     if rowIndex < 0 then None
     elif rowIndex > maxRowIndex then None
     elif columnIndex < 0 then None
@@ -42,11 +42,11 @@ let points =
     rawPoints
     |> Array.mapi (fun rowIndex row -> 
         row |> Array.mapi (fun columnIndex value -> 
-            let up = intToOptionalIntInGrid rawPoints (rowIndex - 1) columnIndex
-            let down = intToOptionalIntInGrid rawPoints (rowIndex + 1) columnIndex
-            let left = intToOptionalIntInGrid rawPoints rowIndex (columnIndex - 1)
-            let right = intToOptionalIntInGrid rawPoints rowIndex (columnIndex + 1)
-            let value = intToOptionalIntInGrid rawPoints rowIndex columnIndex
+            let up = positionToOptionalInt rawPoints (rowIndex - 1) columnIndex
+            let down = positionToOptionalInt rawPoints (rowIndex + 1) columnIndex
+            let left = positionToOptionalInt rawPoints rowIndex (columnIndex - 1)
+            let right = positionToOptionalInt rawPoints rowIndex (columnIndex + 1)
+            let value = positionToOptionalInt rawPoints rowIndex columnIndex
             let unboxedValue = value |> unboxOptionalInt
             let minValue = [up;down;left;right;value] |> List.choose id |> List.min
             let amountOfMinValues = [up;down;left;right;value] |> List.choose id |> List.filter ((=) minValue) |> List.length
