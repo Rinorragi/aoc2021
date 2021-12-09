@@ -1,7 +1,5 @@
 open System
 
-printfn "Advent of Code Day 9"
-
 type Point = {
     PointId : string
     Row : int
@@ -14,8 +12,6 @@ type Point = {
     RiskLevel : int
     IsLowPoint : bool
 } 
-
-    
 
 let rawPoints = 
     System.IO.File.ReadLines "./input/input_day9.txt"
@@ -69,14 +65,6 @@ let points =
         )
     )
 
-let answer1 = 
-    points 
-    |> Array.concat
-    |> Array.filter (fun f -> f.IsLowPoint)
-    |> Array.sumBy (fun f -> f.RiskLevel)
-
-printfn "Answer 1: %d" answer1
-
 let isIntValueSmallerThanOptionalValue (value: int) (optionalValue: Option<int>)  =
     match optionalValue with
     | Some(x) ->  x < 9 && value < x
@@ -105,7 +93,17 @@ let rec solveBasin (basinPoints : Map<string,Point>) (currentPoint : Point) =
         |> List.fold (fun basinPointUpdater newPoint -> 
             joinMaps basinPointUpdater (solveBasin basinPointUpdater newPoint)
         ) updatedBasinPoints
-         
+
+printfn "Advent of Code Day 9"
+
+let answer1 = 
+    points 
+    |> Array.concat
+    |> Array.filter (fun f -> f.IsLowPoint)
+    |> Array.sumBy (fun f -> f.RiskLevel)
+
+printfn "Answer 1: %d" answer1
+
 let answer2 = 
     points 
     |> Array.concat
