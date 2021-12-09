@@ -83,16 +83,13 @@ let rec solveBasin (basinPoints : Map<string,Point>) (p : Point) =
         let down = if isIntSmallerThanOptionalInt p.Height p.Down then Some(((p.Row + 1), p.Column)) else None
         let left = if isIntSmallerThanOptionalInt p.Height p.Left then Some(p.Row, (p.Column - 1)) else None
         let right = if isIntSmallerThanOptionalInt p.Height p.Right then Some(p.Row, (p.Column + 1)) else None
-        let whereToContinue = 
-            [up;down;left;right]
+        [up;down;left;right]
             |> List.filter (Option.isSome)
             |> List.map (fun f -> points[fst f.Value][snd f.Value])
             |> List.filter (fun p -> not(basinPoints.ContainsKey(p.Id)))
-    
-        whereToContinue 
-        |> List.fold (fun basinPointUpdater newPoint -> 
-            joinMaps basinPointUpdater (solveBasin basinPointUpdater newPoint)
-        ) updatedBasinPoints
+            |> List.fold (fun basinPointUpdater newPoint -> 
+                joinMaps basinPointUpdater (solveBasin basinPointUpdater newPoint)
+            ) updatedBasinPoints
 
 printfn "Advent of Code Day 9"
 
