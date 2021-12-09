@@ -71,7 +71,6 @@ let answer1 =
     points 
     |> Array.concat
     |> Array.filter (fun f -> f.IsLowPoint)
-    |> Array.map (fun f -> f.RiskLevel)
-    |> Array.sum
+    |> Array.sumBy (fun f -> f.RiskLevel)
 
 printfn "Answer 1: %d" answer1
