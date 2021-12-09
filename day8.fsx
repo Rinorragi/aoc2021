@@ -6,7 +6,7 @@ printfn "Advent of Code Day 8"
 type SignalEntry = {
     SignalPatterns : string array
     OutputValues: string array
-    SolvedValues: IDictionary<int, string>
+    SolvedValues: Map<int, string>
 }
 
 let intersectBy (patternToMatch: string) (pattern: string) (count: int) =
@@ -48,7 +48,7 @@ let solveSignalPatterns (signalPatterns : string array) =
         6, sixPattern;
         7, sevenPattern; 
         8, eightPattern
-        9, ninePattern] |> dict
+        9, ninePattern] |> Map.ofSeq
 
 
 let stringCharactersMatch (pattern: string) (value: string) =
@@ -64,12 +64,12 @@ let countUsageOfNumbers (entry : SignalEntry) (numbers : int list) =
     |> List.sum
 
 let patternValueToLong (entry : SignalEntry) =
-    let invertedDictionary = entry.SolvedValues |> Seq.map (fun (KeyValue(k, v)) -> (v,k)) |> dict
+    let invertedMap = entry.SolvedValues |> Seq.map (fun (KeyValue(k, v)) -> (v,k)) |> Map.ofSeq
     entry.OutputValues 
     |> Array.map (fun value -> 
         entry.SignalPatterns 
         |> Array.filter (fun pattern -> stringCharactersMatch pattern value )
-        |> Array.map (fun f -> invertedDictionary[f])
+        |> Array.map (fun f -> invertedMap[f])
         |> Array.head)
     |> Array.map string
     |> String.concat ""
