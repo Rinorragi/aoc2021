@@ -3,6 +3,7 @@ open System
 printfn "Advent of Code Day 9"
 
 type Point = {
+    PointId : string
     Row : int
     Column : int
     Up : Option<int>
@@ -63,6 +64,7 @@ let points =
                 Height = unboxedValue
                 RiskLevel = unboxedValue + 1
                 IsLowPoint = amountOfMinValues = 1 && minValue = unboxedValue
+                PointId = sprintf "%d,%d" rowIndex columnIndex
             }
         )
     )
@@ -74,3 +76,44 @@ let answer1 =
     |> Array.sumBy (fun f -> f.RiskLevel)
 
 printfn "Answer 1: %d" answer1
+
+let isIntValueSmallerThanOptionalValue (value: int) (optionalValue: Option<int>)  =
+    match optionalValue with
+    | Some(x) ->  x < 9 && value < x
+    | None -> false
+
+let joinMaps (p:Map<'a,'b>) (q:Map<'a,'b>) = 
+    Map(Seq.concat [ (Map.toSeq p) ; (Map.toSeq q) ])
+
+let rec solveBasin (basinPoints : Map<string,Point>) (currentPoint : Point) =
+    if basinPoints.ContainsKey(currentPoint.PointId)
+    then 
+        basinPoints
+    else 
+        let updatedBasinPoints = basinPoints |> Map.add currentPoint.PointId currentPoint
+        let up = if isIntValueSmallerThanOptionalValue currentPoint.Height currentPoint.Up then Some(((currentPoint.Row - 1), currentPoint.Column)) else None
+        let down = if isIntValueSmallerThanOptionalValue currentPoint.Height currentPoint.Down then Some(((currentPoint.Row + 1), currentPoint.Column)) else None
+        let left = if isIntValueSmallerThanOptionalValue currentPoint.Height currentPoint.Left then Some(currentPoint.Row, (currentPoint.Column - 1)) else None
+        let right = if isIntValueSmallerThanOptionalValue currentPoint.Height currentPoint.Right then Some(currentPoint.Row, (currentPoint.Column + 1)) else None
+        let whereToContinue = 
+            [up;down;left;right]
+            |> List.filter (Option.isSome)
+            |> List.map (fun f -> points[fst f.Value][snd f.Value])
+            |> List.filter (fun p -> not(basinPoints.ContainsKey(p.PointId)))
+    
+        whereToContinue 
+        |> List.fold (fun basinPointUpdater newPoint -> 
+            joinMaps basinPointUpdater (solveBasin basinPointUpdater newPoint)
+        ) updatedBasinPoints
+         
+let answer2 = 
+    points 
+    |> Array.concat
+    |> Array.filter (fun f -> f.IsLowPoint)
+    |> Array.map (fun f -> solveBasin (Map []) f)
+    |> Array.map (fun f -> f |> Map.toSeq |> Seq.length)
+    |> Array.sortDescending
+    |> Array.take 3
+    |> Array.fold (fun acc elem -> acc * elem) 1
+
+printfn "Answer 2: %d" answer2
