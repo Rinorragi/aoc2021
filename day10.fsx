@@ -48,6 +48,14 @@ let matchIndexedCharTuple (icTuple: IndexedChar * IndexedChar) =
     || ((fst icTuple).OriginalChar = '{' && (snd icTuple).OriginalChar = '}')
     || ((fst icTuple).OriginalChar = '<' && (snd icTuple).OriginalChar = '>')
 
+let charToAutoCompleteScore (c : char) = 
+    match c with 
+    | '(' -> 1L
+    | '[' -> 2L
+    | '{' -> 3L
+    | '<' -> 4L
+    | _ -> raise(ArgumentException((sprintf "Invalid character type %c" c)))
+
 let navSyntaxRows = 
     System.IO.File.ReadLines "./input/input_day10.txt"
     |> List.ofSeq
@@ -85,11 +93,14 @@ let unboxOptionalIndexedChar (oc : Option<IndexedChar>) =
 
 printfn "Advent of Code Day 10"
 
-navSyntaxRows
-|> List.map (fun sr -> tidyUp sr.Chars)
+let indexedSyntaxRows = 
+    navSyntaxRows 
+    |> List.map (fun sr -> (sr, tidyUp sr.Chars))
+
+indexedSyntaxRows
 |> List.map (fun ics -> 
     let nonOpenings = 
-        ics 
+        (snd ics) 
         |> List.filter (fun ic -> not(ic.IsOpening))
     if nonOpenings.Length = 0
     then None
@@ -100,3 +111,22 @@ navSyntaxRows
 |> List.map indexedCharToSyntaxErrorScore
 |> List.sum
 |> printfn "Answer 1: %d"
+
+let incompleteRows = 
+    indexedSyntaxRows
+    |> List.filter (fun f -> (snd f) |> List.forall(fun c -> c.IsOpening))
+
+let answerList =
+    incompleteRows
+    |> List.map (fun f -> 
+        let charsToComplete = (snd f)
+        charsToComplete
+        |> List.rev
+        |> List.fold(fun score elem -> 
+            (5L * score) + (charToAutoCompleteScore elem.OriginalChar)  
+        ) 0L
+    )
+    |> List.sort
+
+let answer2 = answerList[answerList.Length / 2]
+printfn "Answer 2: %d" answer2
