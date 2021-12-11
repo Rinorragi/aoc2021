@@ -11,9 +11,6 @@ let dumboOctopusses =
             |> int))
     |> Array.ofSeq
 
-let maxRowIndex = dumboOctopusses.Length - 1
-let maxColumnIndex = dumboOctopusses[0].Length - 1
-
 let flashEffect (octopus: int) (flashArray: (int * int) array) (previouslyFlashed : (int * int) array) (row : int) (col : int) =
     let flashed = 
         (flashArray |> Array.contains (row, col)) 
@@ -68,6 +65,15 @@ let step (dumboOctopusStatus : int array array) =
             octopusRow |> Array.map ((+) 1))
     flash updatedStatus [||] 0
 
+let rec synchronousFlashFinder (dumboOctopusStatus : int array array) (stepNumber : int) =
+    let stepStatus = step dumboOctopusStatus
+    let flashAmount = snd stepStatus
+    if flashAmount = (dumboOctopusStatus.Length * dumboOctopusStatus[0].Length)
+    then stepNumber
+    else 
+        synchronousFlashFinder (fst stepStatus) (stepNumber + 1)
+
+
 printfn "Advent of Code Day 11"
 
 [1 .. 100]
@@ -78,3 +84,4 @@ printfn "Advent of Code Day 11"
     newStatus
 ) (dumboOctopusses, 0)
 
+synchronousFlashFinder dumboOctopusses 1 |> printfn "Answer 2: %d"
