@@ -1,38 +1,16 @@
 #time
 open System
 
-type BracketType =
-    | Round
-    | Square
-    | Curly
-    | Angle
-
 type IndexedChar = {
-    Type : BracketType
     OriginalChar : char
     Index : int
     IsOpening : bool
-    IsRemoved : bool
 }
 
 type SyntaxRow = {
     Chars : IndexedChar list
     OriginalRow : string
 }
-
-let charToBracketType (c : char) = 
-    match c with 
-    | '(' | ')' -> BracketType.Round
-    | '[' | ']' -> BracketType.Square
-    | '{' | '}' -> BracketType.Curly
-    | '<' | '>' -> BracketType.Angle
-    | _ -> raise(ArgumentException((sprintf "Invalid character type %c" c)))
-
-let charIsOpening (c : char) =
-    match c with 
-    | '(' | '[' | '{' | '<' -> true
-    | ')' | ']' | '}' | '>' -> false
-    | _ -> raise(ArgumentException((sprintf "Invalid character type %c" c)))
 
 let indexedCharToSyntaxErrorScore (ic : IndexedChar) =
     match ic.OriginalChar with 
@@ -64,11 +42,13 @@ let navSyntaxRows =
             Chars = 
                 s.ToCharArray()
                 |> Array.mapi (fun i c -> {
-                    Type = charToBracketType c
                     OriginalChar = c
                     Index = i
-                    IsRemoved = false
-                    IsOpening = charIsOpening c})
+                    IsOpening =  
+                        match c with 
+                        | '(' | '[' | '{' | '<' -> true
+                        | ')' | ']' | '}' | '>' -> false
+                        | _ -> raise(ArgumentException((sprintf "Invalid character type %c" c)))})
                 |> List.ofArray
             OriginalRow = s})
 
