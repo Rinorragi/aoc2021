@@ -65,23 +65,17 @@ let step (dumboOctopusStatus : int array array) =
             octopusRow |> Array.map ((+) 1))
     flash updatedStatus [||] 0
 
-let rec synchronousFlashFinder (dumboOctopusStatus : int array array) (stepNumber : int) =
+let rec synchronousFlashFinder (dumboOctopusStatus : int array array) (totalFlashes : int) (stepNumber : int) =
     let stepStatus = step dumboOctopusStatus
     let flashAmount = snd stepStatus
+    let newTotalFlashes = totalFlashes + flashAmount
+    if(stepNumber = 100) then printfn "Answer 1: %d flashes" newTotalFlashes
     if flashAmount = (dumboOctopusStatus.Length * dumboOctopusStatus[0].Length)
     then stepNumber
     else 
-        synchronousFlashFinder (fst stepStatus) (stepNumber + 1)
+        synchronousFlashFinder (fst stepStatus) newTotalFlashes (stepNumber + 1)
 
 
 printfn "Advent of Code Day 11"
 
-[1 .. 100]
-|> List.fold (fun (status: int array array * int) (round: int) -> 
-    let stepStatus = step (fst status)
-    let newStatus = (fst stepStatus, (snd status + snd stepStatus))
-    if(round = 100) then printfn "Anwswer 1: %d flashes" (snd newStatus)
-    newStatus
-) (dumboOctopusses, 0)
-
-synchronousFlashFinder dumboOctopusses 1 |> printfn "Answer 2: %d"
+synchronousFlashFinder dumboOctopusses 0 1 |> printfn "Answer 2: %d step"
