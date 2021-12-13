@@ -64,10 +64,10 @@ let manualPage =
 
 let maxY = foldedManualPage |> List.maxBy snd |> snd
 let maxX = (foldedManualPage |> List.maxBy fst |> fst)
-[0 .. maxX]
-|> List.map (fun x -> 
-    [0 .. maxY]
-    |> List.map (fun y -> 
+[0 .. maxY]
+|> List.map (fun y -> 
+    [0 .. maxX]
+    |> List.map (fun x -> 
         match manualPage.ContainsKey(x,y) with
         | true -> printf "#"
         | false -> printf " ")
