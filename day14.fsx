@@ -55,9 +55,9 @@ let printResult (aMap: Map<string,int64>) (step: int) =
     let part = if step = 10 then 1 else 2
     let (mostCommon, leastCommon) = getLeastCommonAndMostCommon aMap
     // Characters appears always in pairs, so we have double too much of them
-    let least = floor ((double)(snd leastCommon) / (double)2)
-    let most = ceil ((double)(snd mostCommon) / (double)2)
-    printfn "Answer %d: Most common %c occurs %f times and least common %c occurs %f times which results %f" part (fst mostCommon) most (fst leastCommon) least (most - least)
+    let least = floor ((double)(snd leastCommon) / (double)2) |> int64
+    let most = ceil ((double)(snd mostCommon) / (double)2) |> int64
+    printfn "Answer %d: Most common %c occurs %d times and least common %c occurs %d times which results %d" part (fst mostCommon) most (fst leastCommon) least (most - least)
 
 let rec processInstructions (polymer: Map<string,int64>) (step: int) =
     let newPolymer = 
