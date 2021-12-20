@@ -16,7 +16,7 @@ let charToBit (aChar : char) =
     | '.' -> '0'
     | _ -> raise(ArgumentException("Invalid char"))
 
-let positionToBinaryString (grid : char array array) (maxRowIndex: int) (maxColumnIndex: int) (rowIndex : int) (columnIndex : int) (initialState : char) =
+let positionToBinaryChar (grid : char array array) (maxRowIndex: int) (maxColumnIndex: int) (rowIndex : int) (columnIndex : int) (initialState : char) =
     if rowIndex < 0 then charToBit initialState
     elif rowIndex > maxRowIndex then charToBit initialState
     elif columnIndex < 0 then charToBit initialState
@@ -25,16 +25,12 @@ let positionToBinaryString (grid : char array array) (maxRowIndex: int) (maxColu
 
 
 let pixelToBinaryValue (grid : char array array) (maxRowIndex: int) (maxColumnIndex: int) (rowIndex : int) (columnIndex : int) (initialState : char) =
-    let topleft = positionToBinaryString grid maxRowIndex maxColumnIndex (rowIndex - 1) (columnIndex - 1) initialState
-    let top = positionToBinaryString grid maxRowIndex maxColumnIndex (rowIndex - 1) columnIndex initialState
-    let topright = positionToBinaryString grid maxRowIndex maxColumnIndex (rowIndex - 1) (columnIndex + 1) initialState
-    let left = positionToBinaryString grid maxRowIndex maxColumnIndex rowIndex (columnIndex - 1) initialState
-    let center = positionToBinaryString grid maxRowIndex maxColumnIndex rowIndex columnIndex initialState
-    let right = positionToBinaryString grid maxRowIndex maxColumnIndex rowIndex (columnIndex + 1) initialState
-    let botleft = positionToBinaryString grid maxRowIndex maxColumnIndex (rowIndex + 1) (columnIndex - 1) initialState
-    let bot = positionToBinaryString grid maxRowIndex maxColumnIndex (rowIndex + 1) columnIndex initialState
-    let botright = positionToBinaryString grid maxRowIndex maxColumnIndex (rowIndex + 1) (columnIndex + 1) initialState
-    [|topleft;top;topright;left;center;right;botleft;bot;botright|] |> System.String     
+    [ -1 .. 1] 
+    |> List.map (fun row -> 
+        [| -1 .. 1|] 
+        |> Array.map (fun col -> positionToBinaryChar grid maxRowIndex maxColumnIndex (rowIndex + row) (columnIndex + col) initialState)
+        |> System.String)
+    |> String.concat ""
 
 let charToPixel (grid : char array array) (maxRowIndex: int) (maxColumnIndex: int) (rowIndex : int) (columnIndex : int) (initialState : char) =
     let binaryString = pixelToBinaryValue grid maxRowIndex maxColumnIndex rowIndex columnIndex initialState
@@ -54,8 +50,6 @@ let charArrayArrayToPixelArrayArray (grid : char array array) (initialState : ch
     |> Array.mapi (fun rowIndex row -> 
         row |> Array.mapi (fun columnIndex value -> charToPixel grid maxRowIndex maxColumnIndex rowIndex columnIndex initialState)
     )
-
-let toArray (arr: 'T [,]) = arr |> Seq.cast<'T> |> Seq.toArray
 
 let stretchImage (image : Pixel array array) (initialState : char) =
     // True data seems to have pixel lit on (#) at
