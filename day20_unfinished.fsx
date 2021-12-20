@@ -89,12 +89,6 @@ let createOutputImage (image : Pixel array array) (enhancementAlgorithm: string)
         x |> Array.map (fun y -> enhancementAlgorithm[(image[y.Row][y.Column]).BinaryValue]))
     |> (fun f -> charArrayArrayToPixelArrayArray f initialState)
 
-let printPixelArray (image : Pixel array array) =
-    image 
-    |> Array.map (fun row -> (row |> Array.map (fun col -> col.PixelValue)) |> System.String)
-    |> Array.map (printfn "%s") 
-    |> ignore
-
 printfn "Advent of Code Day 20"
 let nl = "\n"
 let imageScannerRawData = 
@@ -110,10 +104,9 @@ let imageEnhancementAlgorithm = imageScannerRawData[0]
 let inputImage = 
     charArrayArrayToPixelArrayArray inputImageRaw '.' 
     |> (fun f -> stretchImage f '.')
-printPixelArray inputImage
 
 let litResult = 
-    [1..2]
+    [1..50]
     |> List.fold (fun acc currentRound ->
             // Stupid hack to handle "infinity"
         let initialState = 
@@ -126,12 +119,15 @@ let litResult =
             else '#'
         let midResult = createOutputImage acc imageEnhancementAlgorithm initialState
         let largerPicture = stretchImage midResult initialState
-        printPixelArray largerPicture |> ignore
+        if currentRound = 2 || currentRound = 50
+        then 
+            largerPicture 
+            |> Array.map(fun row -> row |> Array.filter(fun s -> s.PixelValue = '#'))
+            |> Array.concat
+            |> Array.length
+            |> (fun f -> printfn "Answer at round %d: %d" currentRound f)
+            |> ignore
         largerPicture
+        
     ) inputImage
 
-litResult 
-|> Array.map(fun row -> row |> Array.filter(fun s -> s.PixelValue = '#'))
-|> Array.concat
-|> Array.length
-|> printfn "Answer 1: %d"
