@@ -17,12 +17,12 @@ let charToBit (aChar : char) =
     | _ -> raise(ArgumentException("Invalid char"))
 
 let positionToBinaryChar (grid : char array array) (maxRowIndex: int) (maxColumnIndex: int) (rowIndex : int) (columnIndex : int) (initialState : char) =
-    if rowIndex < 0 then charToBit initialState
-    elif rowIndex > maxRowIndex then charToBit initialState
-    elif columnIndex < 0 then charToBit initialState
-    elif columnIndex > maxColumnIndex then charToBit initialState
+    if rowIndex < 0 
+        || rowIndex > maxRowIndex 
+        || columnIndex < 0 
+        || columnIndex > maxColumnIndex 
+    then charToBit initialState
     else charToBit (grid[rowIndex][columnIndex])
-
 
 let pixelToBinaryValue (grid : char array array) (maxRowIndex: int) (maxColumnIndex: int) (rowIndex : int) (columnIndex : int) (initialState : char) =
     [ -1 .. 1] 
@@ -64,7 +64,7 @@ let stretchImage (image : Pixel array array) (initialState : char) =
     // End result is either infinity or within those boundaries that are expanded this way
     let initialRowLength = image.Length
     let initialColumntLength = image[0].Length
-    let boundaryWidth = 3
+    let boundaryWidth = 2
     let rowLengthChange = boundaryWidth * 2
     [|0 .. initialRowLength + rowLengthChange - 1|]
     |> Array.map (fun x -> 
@@ -99,29 +99,27 @@ let inputImage =
     charArrayArrayToPixelArrayArray inputImageRaw '.' 
     |> (fun f -> stretchImage f '.')
 
-let litResult = 
-    [1..50]
-    |> List.fold (fun acc currentRound ->
-            // Stupid hack to handle "infinity"
-        let initialState = 
-            if imageEnhancementAlgorithm[0] = '.'
-            then '.'
-            elif (imageEnhancementAlgorithm[0] = '#' && currentRound % 2 = 1)
-            then '#' // first round . -> #
-            elif imageEnhancementAlgorithm[imageEnhancementAlgorithm.Length - 1] = '.'  // second round # -> 
-            then '.'
-            else '#'
-        let midResult = createOutputImage acc imageEnhancementAlgorithm initialState
-        let largerPicture = stretchImage midResult initialState
-        if currentRound = 2 || currentRound = 50
-        then 
-            largerPicture 
-            |> Array.map(fun row -> row |> Array.filter(fun s -> s.PixelValue = '#'))
-            |> Array.concat
-            |> Array.length
-            |> (fun f -> printfn "Answer at round %d: %d" currentRound f)
-            |> ignore
-        largerPicture
-        
-    ) inputImage
+[1..50]
+|> List.fold (fun acc currentRound ->
+        // Stupid hack to handle "infinity"
+    let initialState = 
+        if imageEnhancementAlgorithm[0] = '.'
+        then '.'
+        elif (imageEnhancementAlgorithm[0] = '#' && currentRound % 2 = 1)
+        then '#' // first round . -> #
+        elif imageEnhancementAlgorithm[imageEnhancementAlgorithm.Length - 1] = '.'  // second round # -> 
+        then '.'
+        else '#'
+    let midResult = createOutputImage acc imageEnhancementAlgorithm initialState
+    let largerPicture = stretchImage midResult initialState
+    if currentRound = 2 || currentRound = 50
+    then 
+        largerPicture 
+        |> Array.map(fun row -> row |> Array.filter(fun s -> s.PixelValue = '#'))
+        |> Array.concat
+        |> Array.length
+        |> (fun f -> printfn "Answer at round %d: %d" currentRound f)
+        |> ignore
+    largerPicture
+) inputImage
 
